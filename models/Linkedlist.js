@@ -35,55 +35,49 @@ class LinkedList{
         this.#qtd++;
         return true;
     }
+ addTarefa(novaTarefa) {
+        const novoNo = new No(novaTarefa);
+        
+      
+        if (this.#head === null) {
+            this.#head = novoNo;
+            this.#tail = novoNo;
+            return;
+        }
 
-   addTarefa(index, novaTarefa) {
-    if (!novaTarefa || typeof novaTarefa.prioridade !== 'number') {
-        throw new Error("Tarefa inválida ou prioridade não definida.");
+       
+        if (novaTarefa.prioridade < this.#head.dado.prioridade) {
+            novoNo.proximo = this.#head;
+            this.#head.anterior = novoNo;
+            this.#head = novoNo;
+            return;
+        }
+
+        let atual = this.#head;
+        while (atual.proximo !== null && atual.proximo.dado.prioridade <= novaTarefa.prioridade) {
+            atual = atual.proximo;
+        }
+
+        novoNo.proximo = atual.proximo;
+        if (atual.proximo !== null) {
+            atual.proximo.anterior = novoNo;
+        } else {
+            this.#tail = novoNo; 
+        }
+        atual.proximo = novoNo;
+        novoNo.anterior = atual;
     }
 
-    const novoNo = new No(novaTarefa);
-
-    if (index < 0 || index > this.#qtd) {
-        throw new Error("Índice inválido.");
-    }
-
-    
-    if (this.isEmpty() || novaTarefa.prioridade < this.#head.dado.prioridade) {
-        return this.addFirst(novaTarefa);
-    }
-
-    
-    if (index === this.#qtd) {
-        return this.addLast(novaTarefa);
-    }
-
-    let noAtual = this.#head;
-    let posAtual = 0;
-
-    
-    while (posAtual < index && noAtual.proximo !== null && novaTarefa.prioridade >= noAtual.proximo.dado.prioridade) {
-        noAtual = noAtual.proximo;
-        posAtual++;
-    }
-
-    // Insere o novo nó na posição correta
-    novoNo.proximo = noAtual.proximo;
-    novoNo.anterior = noAtual;
-    noAtual.proximo = novoNo;
-
-    if (novoNo.proximo !== null) {
-        novoNo.proximo.anterior = novoNo;
-    } else {
-        this.#tail = novoNo; // Atualiza o último elemento se necessário
-    }
-
-    this.#qtd++;
-    return true;
+removeFirst(){
+    const dadoremovido = this.#head.dado;
+    this.#head = this.#head.proximo;
+    if(this.#head!==null)
+        this.#head.anterior =null;
+    else
+        this.#tail = null;
+    this.#qtd--;
+    return dadoremovido;
 }
-
-
-
-   
   removerAtIndex(index) {
     if (index < 0 || index >= this.#qtd || this.isEmpty()) {
         return null;
@@ -115,76 +109,15 @@ class LinkedList{
 }
  
 
-   removerTarefaEspecifica() {
-    const listaTarefas = document.getElementById("list_listadeTarefas");
-    if (!listaTarefas) return;
+   
 
-    const itensLista = listaTarefas.getElementsByTagName("li");
-
-    for(let i = 0; i < itensLista.length; i++) {
-        itensLista[i].addEventListener("click", function() {
-            // Remove o item clicado
-            this.remove();
-            alert("Tarefa removida com sucesso!");
-
-            // Chame atualizarLista() aqui caso queira sincronizar com dados persistentes
-            // atualizarLista();
-        });
-    }
-}
-
-mostrarPrimeiraTarefa() {
-    if (!minhaLista.isEmpty()) {
-        const primeiraTarefa = minhaLista.getFirst();
-        alert(`Primeira Tarefa: ${primeiraTarefa.descricao} - Prioridade: ${primeiraTarefa.prioridade}`);
-    } else {
-        alert("A lista está vazia.");
-    }
-}
-
-  
-    mostrarTarefaAntiga() {
-    if (this.isEmpty()) {
-        return null; 
-    }
-    
-    let noAtual = this.#head;
-    while (noAtual.proximo !== null) {
-        noAtual = noAtual.proximo; 
-    }
-    
-    return noAtual.dado; 
-}
-
-
-    removeFirst(){
-        const dadoRemovido = this.#head.dado;
-        this.#head = this.#head.proximo;
-        if(this.#head!==null)
-            this.#head.anterior = null;
-        else
-            this.#tail = null;
-        this.#qtd--;
-        return dadoRemovido;
-    }
-
-    removeLast(){
-        const dadoRemovido = this.#tail.dado;
-        this.#tail = this.#tail.anterior;
-        if(this.#tail!=null)
-            this.#tail.proximo = null;
-        else
-          this.#head = null;
-        this.#qtd--;
-        return dadoRemovido;
-    }
-    
     getLast(){
       return this.#tail.dado;
     }
-     getFirst(){
-        return this.#head.dado;
-     }
+  getFirst(){
+    return this.#head.dado;
+}
+
     isEmpty(){
         return this.#head === null;
     }
@@ -198,11 +131,28 @@ mostrarPrimeiraTarefa() {
         const tarefaRealizada = this.minhaLista.removeFirst();
         const dataAtual = obterDataAtual();
         const horaAtual = obterHoraAtual();
-        // Verifique se as funções de cálculo estão retornando valores válidos
+
+        // Calcular a diferença em dias
         const dias = calcularDiferencaDias(tarefaRealizada.data, dataAtual);
-        const horas = calcularDiferencaHoras(tarefaRealizada.hora, horaAtual);
-        const mensagem = `Tarefa concluída: ${tarefaRealizada.descricao}\nTempo necessário: ${dias} dias e ${horas} horas.`;
-        alert(mensagem);
+
+        // Calcular a diferença em horas e minutos
+        const diferencaHorasMinutos = calcularDiferencaHoras(tarefaRealizada.hora, horaAtual);
+        const [horas, minutos] = diferencaHorasMinutos.split(':').map(Number);
+
+        // Montar a mensagem
+        const mensagem = `Tarefa concluída: ${tarefaRealizada.descricao}<br>` +
+                         `Tempo necessário: ${dias} dias, ${horas} horas e ${minutos} minutos.`;
+
+        // Exibir a mensagem em um elemento HTML ou alert
+        const mensagemEl = document.getElementById("mensagem-remocao");
+        if (mensagemEl) {
+            mensagemEl.innerHTML = mensagem;
+            mensagemEl.style.display = "block"; // Exibe a mensagem
+        } else {
+            alert(mensagem); // Fallback para alert
+        }
+
+        // Atualiza a lista na interface
         atualizarLista();
     } else {
         alert("Lista de Tarefas Vazia.");

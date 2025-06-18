@@ -4,7 +4,6 @@ const minhaLista = new LinkedList();
 function limpaInputs() {
     document.getElementById("txtnovaTarefa").value = "";
     document.getElementById("txtnovaPrioridade").value = "";
-    document.getElementById("txtIndice").value = "";
     document.getElementById("txtnovaTarefa").focus();
 }
 //--------------------------------------------------------------------------------------------
@@ -17,39 +16,57 @@ function leiaDadosTarefa() {
     }
     return new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
 }
+
 //--------------------------------------------------------------------------------------------
- function adicionarElementoInicio() {
-    const novaTarefa = leiaDadosTarefa();
-    if(novaTarefa!=null){
-      minhaLista.addFirst(novaTarefa);
-      console.log(minhaLista.toString());
-      limpaInputs();
-      atualizarLista();
-    }
- }
- //------------------------------------------------------------------------------------------------------
-  function adicionarElementoFinal() {
-    const novaTarefa = leiaDadosTarefa();
-    if(novaTarefa!=null){
-      minhaLista.addLast(novaTarefa);
-      console.log(minhaLista.toString());
-      limpaInputs();
-      atualizarLista();
+ function mostraPrimeira(){
+    if (!minhaLista.isEmpty()) {
+        const primeira = minhaLista.getFirst();
+        alert(`Primeira Tarefa: ${primeira.descricao} - Prioridade: ${primeira.prioridade}`);
+    } else {
+        alert("A lista está vazia.");
     }
   }
+  
+ function mostrarMaisAntiga() {
+    if (minhaLista.isEmpty()) {
+        alert("Lista de Tarefas Vazia.");
+        return;
+    }
+
+    let noAtual = minhaLista.getFirst(); // Use o método que retorna o nó
+    let tarefaMaisAntiga = noAtual.dado; // Começa com a primeira tarefa
+
+    while (noAtual !== null) {
+        const tarefaAtual = noAtual.dado;
+
+        // Usa a sua função correta para comparar as datas
+        if (comparaTarefasDataHora(tarefaAtual, tarefaMaisAntiga) === tarefaAtual) {
+            tarefaMaisAntiga = tarefaAtual; // Atualiza a tarefa mais antiga
+        }
+
+        noAtual = noAtual.proximo; // Move para o próximo nó
+    }
+
+    // Exibe a tarefa mais antiga
+    const mensagem = `Tarefa mais antiga: ${tarefaMaisAntiga.descricao}<br>Data: ${tarefaMaisAntiga.data}<br>Hora: ${tarefaMaisAntiga.hora}`;
+    const mensagemEl = document.getElementById("mensagem-remocao");
+    mensagemEl.innerHTML = mensagem;
+    mensagemEl.style.display = "block"; // Exibe a mensagem
+}
+
+
+
   //--------------------------------------------------------------------------------------------
-  function adicionarIndice() {
-        const novaTarefa = leiaDadosTarefa();
-     
-    if(novaTarefa!=null){
-      minhaLista.addAtIndex( novaTarefa);
-      console.log(minhaLista.toString());
-   
-   
-      limpaInputs();
-      atualizarLista();
+function adicionarTarefa() {
+    const novaTarefa = leiaDadosTarefa();
+    if (novaTarefa != null) {
+        minhaLista.addTarefa(novaTarefa); // Chama o método para adicionar a tarefa
+        console.log(minhaLista.toString());
+        limpaInputs();
+        atualizarLista();
     }
-  }
+}
+
 //--------------------------------------------------------------------------------------------
  // Função para remover o primeiro elemento da lista
  function removerElementoInicio() {
@@ -63,6 +80,24 @@ function leiaDadosTarefa() {
     }
    
  }
+
+ function removerTarefaEspecifica() {
+    const listaTarefas = document.getElementById("list_listadeTarefas");
+    if (!listaTarefas) return;
+
+    const itensLista = listaTarefas.getElementsByTagName("li");
+
+    for(let i = 0; i < itensLista.length; i++) {
+        itensLista[i].addEventListener("click", function() {
+            // Remove o item clicado
+            this.remove();
+            alert("Tarefa removida com sucesso!");
+
+            // Chame atualizarLista() aqui caso queira sincronizar com dados persistentes
+            // atualizarLista();
+        });
+    }
+}
  //--------------------------------------------------------------------------------------------
  // Função para remover o ultimo elemento da lista
  function removerElementoFinal() {
@@ -82,6 +117,13 @@ function mostrarMensagemRemocao(tarefaRealizada) {
     mensagem.style.display = "block";
   }
 //-------------------------------------------------------------------------------------------- 
+
+function executarResolverElementoInicio() {
+    removerElementoInicio(); // Chama a função que remove a tarefa do início
+    limpaInputs();           // Opcional: limpa os campos do formulário após resolver a tarefa
+    atualizarLista();        // Atualiza a lista para refletir a remoção
+  
+}
 // Função para atualizar a exibição da fila
  function atualizarLista() {
    const listaTarefas = 

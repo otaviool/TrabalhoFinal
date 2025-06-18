@@ -60,45 +60,41 @@
                     <input type="number" class="form-control form-control-lg" id="txtnovaPrioridade" placeholder="1 = Alta, 2 = Média, 3 = Baixa" min="1" max="3">
                   </div>
                   
-                  <div class="mb-4">
-                    <label for="txtIndice" class="form-label fw-semibold">
-                      <i class="fas fa-list-ol me-1"></i>Índice (opcional)
-                    </label>
-                    <input type="number" class="form-control form-control-lg" id="txtIndice" placeholder="Posição na lista..." min="0">
-                  </div>
+                 
 
                   <!-- Action Buttons -->
                   <div class="row g-2 mb-3">
-                    <div class="col-6">
-                      <button type="button" class="btn btn-success btn-lg w-100" onclick="adicionarElementoInicio()">
-                        <i class="fas fa-angle-double-up me-1"></i>Início
-                      </button>
-                    </div>
-                    <div class="col-6">
-                      <button type="button" class="btn btn-success btn-lg w-100" onclick="adicionarElementoFinal()">
-                        <i class="fas fa-angle-double-down me-1"></i>Final
+                   <div class="col-6">
+                      <button type="button" class="btn btn-success btn-lg w-100" onclick="mostraPrimeira()">
+                        <i class="fas fa-angle-double-up me-1"></i>Primeira Tarefa
                       </button>
                     </div>
                     <div class="col-12">
-                      <button type="button" class="btn btn-info btn-lg w-100" onclick="adicionarIndice()">
-                        <i class="fas fa-crosshairs me-1"></i>Adicionar no Índice
+                      <button type="button" class="btn btn-info btn-lg w-100" onclick="adicionarTarefa()">
+                        <i class="fas fa-crosshairs me-1"></i>Adicionar Tarefa
                       </button>
                     </div>
-                  </div>
+               <div class="col-12">
+    <button type="button" class="btn btn-outline-info w-100" onclick="mostrarMaisAntiga()">
+        <i class="fas fa-clock me-1"></i>Tarefa Mais Antiga
+    </button>
+</div>
 
                   <!-- Remove Buttons -->
                   <div class="row g-2 mb-3">
-                    <div class="col-6">
-                      <button type="button" class="btn btn-outline-danger w-100" onclick="removerElementoInicio()">
-                        <i class="fas fa-minus-circle me-1"></i>Remover Início
-                      </button>
-                    </div>
-                    <div class="col-6">
-                      <button type="button" class="btn btn-outline-danger w-100" onclick="removerElementoFinal()">
-                        <i class="fas fa-minus-circle me-1"></i>Remover Final
-                      </button>
-                    </div>
-                  </div>
+                     <div class="col-12">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="executarResolverElementoInicio()">
+                                            <i class="fas fa-check-circle me-1"></i>Resolver Tarefa 
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+        <button type="button" class="btn btn-danger w-100" onclick="removerTarefaEspecifica()">
+            <i class="fas fa-trash me-1"></i>Remover Tarefa Específica
+        </button>
+    </div>
+</div>
+                  
 
                   <!-- Storage Buttons -->
                   <div class="row g-2">
